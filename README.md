@@ -1,25 +1,18 @@
-Description
+# React useReducer Example
 
-Simple React example demonstrating how to use the useReducer hook to manage multiple input states (name and age).
-The reducer function updates the state based on dispatched actions from each input field.
+This project demonstrates how to manage complex state logic using the `useReducer` hook in React.
 
-How It Works
+## Features
+- Increment and decrement quantity with disabled button limits (0–10)
+- Dynamically calculate total based on selected option value
+- Select different options from a dropdown menu
+- Automatically update total when quantity or selected item changes
 
-* useReducer is used instead of useState for managing more complex state.
-* The reducer function handles two actions:
-    changeName → updates the name value
-    changeAge → updates the age value
-* Each input field triggers a dispatch that sends the action to the reducer.
-
-Key Concepts
-
-* state – holds current values (name, age)
-* reducer – defines how the state changes
-* dispatch – sends actions to the reducer
-* action – describes what change should happen
-
-How to Run
-
-1. Clone this repository
-2. Run npm install
-3. Start the project with npm start
+## How it works
+- The `reducer` function handles actions such as:
+  - `init`: Initializes the total and button states
+  - `incrementQuantity` / `decrementQuantity`: Adjusts quantity and updates total
+  - `selectedItem`: Changes selected option and recalculates total
+- Helper functions:
+  - `reduceButtonState` — disables buttons when limits are reached
+  - `reduceTotal` — recalculates the total based on current selection and quantity

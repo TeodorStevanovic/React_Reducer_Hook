@@ -1,36 +1,105 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
+
+const initalState = {
+  options: [
+    { id: 1, name: "First", value: 10 },
+    { id: 2, name: "Second", value: 50 },
+    { id: 3, name: "Third", value: 200 },
+  ],
+  slected: 1,
+  quantity: 1,
+};
+
+const reduceButtonState = (state) => {
+  return {
+    ...state,
+    decrementDisabled: state.quantity === 0,
+    incrementDisabled: state.quantity === 10,
+  };
+};
+
+const reduceTotal = (state) => {
+  const option = state.options.find((option) => option.id === state.slected);
+
+  return { ...state, total: state.quantity * option.value };
+};
 
 const reducer = (state, action) => {
-  switch (action.type) {
-    case "changeName":
-      return { ...state, name: action.value };
+  let newState;
 
-    case "changeAge":
-      return { ...state, age: action.value };
+  switch (action.type) {
+    case "init":
+      newState = reduceTotal(state);
+      return reduceButtonState(newState);
+
+    case "decrementQuantity":
+      newState = { ...state, quantity: state.quantity - 1 };
+      newState = reduceTotal(newState);
+      return reduceButtonState(newState);
+
+    case "incrementQuantity":
+      newState = { ...state, quantity: state.quantity + 1 };
+      newState = reduceTotal(newState);
+      return reduceButtonState(newState);
+
+    case "selectedItem":
+      newState = { ...state, slected: Number(action.id) };
+      return reduceTotal(newState);
 
     default:
-      throw new Error(`${action.type} is not valid action.`);
+      throw new Error(`${action.type} is not a valid action.`);
   }
 };
 
 const App = () => {
-  const [{ name, age }, dispatch] = useReducer(reducer, { name: "", age: "" });
+  const [
+    {
+      options,
+      selected,
+      quantity,
+      total,
+      decrementDisabled,
+      incrementDisabled,
+    },
+    dispatch,
+  ] = useReducer(reducer, initalState);
+
+  useEffect(() => {
+    dispatch({ type: "init" });
+  }, []);
 
   return (
     <>
-      <input
-        value={name}
-        onChange={(e) =>
-          dispatch({ type: "changeName", value: e.target.value })
-        }
-      />
-      <p>Name: {name}</p>
-
-      <input
-        value={age}
-        onChange={(e) => dispatch({ type: "changeAge", value: e.target.value })}
-      />
-      <p>Age: {age}</p>
+      <section>
+        <button
+          disabled={decrementDisabled}
+          onClick={() => dispatch({ type: "decrementQuantity" })}
+        >
+          -
+        </button>
+        <button
+          disabled={incrementDisabled}
+          onClick={() => dispatch({ type: "incrementQuantity" })}
+        >
+          +
+        </button>
+        <input readOnly value={quantity} />
+      </section>
+      <section>
+        <select
+          value={selected}
+          onChange={(e) => dispatch({ type: "selectedItem", id: e.target.value })}
+        >
+          {options.map((o) => (
+            <option key={o.id} value={o.id}>
+              {o.name}
+            </option>
+          ))}
+        </select>
+      </section>
+      <section>
+        <strong>{total}</strong>
+      </section>
     </>
   );
 };
