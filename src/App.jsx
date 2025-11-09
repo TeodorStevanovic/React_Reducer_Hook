@@ -52,21 +52,18 @@ const reducer = (state, action) => {
 };
 
 const App = () => {
-  const [
-    {
-      options,
-      selected,
-      quantity,
-      total,
-      decrementDisabled,
-      incrementDisabled,
-    },
-    dispatch,
-  ] = useReducer(reducer, initalState);
+  const reducer_ = useReducer(reducer, initalState);
+  console.log(reducer_);
+
+  const [{options, selected, quantity, total, decrementDisabled, incrementDisabled }, dispatch] = reducer_;
 
   useEffect(() => {
     dispatch({ type: "init" });
   }, []);
+
+  useEffect(() => {
+    console.log("promena reducera", reducer_);
+  }, [reducer_]);
 
   return (
     <>
@@ -88,7 +85,9 @@ const App = () => {
       <section>
         <select
           value={selected}
-          onChange={(e) => dispatch({ type: "selectedItem", id: e.target.value })}
+          onChange={(e) =>
+            dispatch({ type: "selectedItem", id: e.target.value })
+          }
         >
           {options.map((o) => (
             <option key={o.id} value={o.id}>
